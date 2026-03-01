@@ -10,7 +10,7 @@ def to_datetime(df):
     df['event_dttm'] = pd.to_datetime(df['event_dttm'])
 
     df['event_hour'] = df['event_dttm'].dt.hour.astype('int8')
-    df['event_dow'] = df['event_dttm'].dt.dayofweek.astype('int8')
+    df['event_day'] = df['event_dttm'].dt.dayofweek.astype('int8')
 
     return df.drop(columns=['event_dttm'])
 
@@ -46,9 +46,8 @@ def typical_customer(df_pretrain: pd.DataFrame) -> dict:
             'typical_hours': customer_ops['event_hour'].mode().tolist() if not customer_ops.empty else [],
             'typical_days': customer_ops['event_day'].mode().tolist() if not customer_ops.empty else [],
 
-            # данные о канале, ос и часовому поясу
+            # данные о канале и часовому поясу
             'typical_chanel': safe_mode(customer_ops['channel_indicator_type']),
-            'typical_os': safe_mode(customer_ops['operating_system_type']),
             'typical_timezone': safe_mode(customer_ops['timezone']),
 
             # самые популярные категории покупок
@@ -66,7 +65,6 @@ use_cols = [
     'event_dttm',
     'mcc_code',
     'channel_indicator_type',
-    'operating_system_type',
     'timezone',
 ]
 
@@ -79,7 +77,7 @@ df_pretrain_1 = to_datetime(df_pretrain_1)
 df_pretrain_2 = to_datetime(df_pretrain_2)
 df_pretrain_3 = to_datetime(df_pretrain_3)
 
-cols_float = ['operaton_amt', 'timezone', 'operating_system_type']
+cols_float = ['operaton_amt', 'timezone']
 df_pretrain_1 = to_type(df_pretrain_1, 'float32', cols_float)
 df_pretrain_2 = to_type(df_pretrain_2, 'float32', cols_float)
 df_pretrain_3 = to_type(df_pretrain_3, 'float32', cols_float)
